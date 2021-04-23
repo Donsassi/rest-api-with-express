@@ -7,6 +7,7 @@ const hamster = require('./hamsters/hamster.js')
 
 const PORT = 1339
 const staticFolder = path.join(__dirname, 'static')
+const staticimg = path.join(__dirname, 'img')
 
 
 
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 app.use( express.json() )
 app.use( cors() )
 app.use( express.static(staticFolder) )
+app.use( express.static(staticimg) )
 
 
 
