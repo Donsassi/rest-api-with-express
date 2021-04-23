@@ -5,7 +5,7 @@ const path = require('path')
 const hamster = require('./hamsters/hamster.js')
 
 
-const PORT = 1339
+const PORT = process.env.PORT || 1337
 const staticFolder = path.join(__dirname, 'static')
 const staticimg = path.join(__dirname, 'img')
 
