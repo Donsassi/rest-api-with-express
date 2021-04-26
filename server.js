@@ -4,12 +4,9 @@ const cors = require('cors')
 const path = require('path')
 const hamster = require('./hamsters/hamster.js')
 
-
 const PORT = process.env.PORT || 1337
-const staticFolder = path.join(__dirname, 'static')
-const staticimg = path.join(__dirname, 'img')
-
-
+const staticFolder = path.join(__dirname, 'static');
+const imgFolder = path.join(__dirname, 'img');
 
 
 // Middleware
@@ -21,10 +18,10 @@ app.use((req, res, next) => {
 
 app.use( express.json() )
 app.use( cors() )
-app.use( express.static(staticFolder) )
-app.use( express.static(staticimg) )
 
-
+//Static folders
+app.use(express.static(staticFolder));
+app.use("/img", express.static(imgFolder));
 
 //rest api for tools
 
