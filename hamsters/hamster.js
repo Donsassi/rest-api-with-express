@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
         })
         res.send(items)
     } catch (e) {
-        res.status(400).send("Error occuring while getting document")
+        res.status(500).send("Error occuring while getting document")
     }
 })
 
@@ -38,7 +38,7 @@ router.get('/random', async (req, res) => {
         }
         else res.status(200).send({});
     } catch (e) {
-        res.status(400).send("Error occuring while getting random document")
+        res.status(500).send("Error occuring while getting random document")
     }
 })
 
@@ -54,7 +54,7 @@ router.get('/:id', async (req, res) => {
         const data = docRef.data()
         res.status(200).send(data)
     } catch (e) {
-        res.status(400).send("Error occuring while getting document")
+        res.status(500).send("Error occuring while getting document")
     }
 })
 
@@ -63,14 +63,16 @@ router.post('/', async (req, res) => {
     try {
         const object = req.body
         if ( !object || !object.name || !object.age || !object.favFood || !object.imgName ) {
-            res.status(400).send("Invaild argruments please check the json body and try again")
+            res.status(404).send("Invaild argruments please check the json body and try again")
             return
         }
         const docRef = await db.collection('hamsters').add(object)
-        const message = "Successfully added new hamster with id: " + docRef.id
+        const message = {
+           id: docRef.id
+        }
         res.status(200).send(message)
     } catch (e) {
-        res.status(400).send("Error occuring while adding document")
+        res.status(500).send("Error occuring while adding document")
     }
 })
 
@@ -81,14 +83,17 @@ router.put('/:id', async (req, res) => {
         const id = req.params.id
         const docRef = await db.collection('hamsters').doc(id).get()
         if ( !id || !docRef.exists ) {
-            res.status(400).send("The id provided did not match any hamster in our db")
+            res.status(404).send("The id provided did not match any hamster in our db")
             return
+        }
+        if ( !req.body ) {
+            res.status(400).send("Nothing in body")
         }
         await db.collection('hamsters').doc(id).update(object)
         const message  = "Successfully updated document " + id
         res.status(200).send(message)
     } catch (e) {
-        res.status(400).send("Error occuring while updating document")
+        res.status(500).send("Error occuring while updating document")
     }
 })
 
@@ -100,13 +105,13 @@ router.delete('/:id', async (req, res) => {
         const id = req.params.id
         const docRef = await db.collection('hamsters').doc(id).get()
         if ( !id || !docRef.exists ) {
-            res.status(400).send("Document does not exist")
+            res.status(404).send("Document does not exist")
             return
         }
         await db.collection('hamsters').doc(id).delete()
         res.status(200).send("Successfully deleted document")
     } catch (e) {
-        res.status(400).send("Error occuring while deleting document")
+        res.status(500).send("Error occuring while deleting document")
     }
 })
 
