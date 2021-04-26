@@ -62,13 +62,13 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const object = req.body
-        if ( !object || !object.name || !object.age || !object.favFood || !object.imgName ) {
+        if (!object || !object.name || !object.age || !object.favFood || !object.imgName ) {
             res.status(404).send("Invaild argruments please check the json body and try again")
             return
         }
         const docRef = await db.collection('hamsters').add(object)
         const message = {
-           id: docRef.id
+            id: docRef.id
         }
         res.status(200).send(message)
     } catch (e) {
@@ -79,15 +79,16 @@ router.post('/', async (req, res) => {
 // PUT, Change exisiting data in DB
 router.put('/:id', async (req, res) => {
     try {
-        const object = req.body
         const id = req.params.id
         const docRef = await db.collection('hamsters').doc(id).get()
         if ( !id || !docRef.exists ) {
             res.status(404).send("The id provided did not match any hamster in our db")
             return
         }
-        if ( !req.body ) {
+        const object = req.body
+        if ( Object.entries(object).length === 0 ) {
             res.status(400).send("Nothing in body")
+            return
         }
         await db.collection('hamsters').doc(id).update(object)
         const message  = "Successfully updated document " + id
@@ -98,13 +99,12 @@ router.put('/:id', async (req, res) => {
 })
 
 
-
 //Delete, Delete a document(hamster) from DB
 router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id
         const docRef = await db.collection('hamsters').doc(id).get()
-        if ( !id || !docRef.exists ) {
+        if (!id || !docRef.exists) {
             res.status(404).send("Document does not exist")
             return
         }
@@ -114,6 +114,8 @@ router.delete('/:id', async (req, res) => {
         res.status(500).send("Error occuring while deleting document")
     }
 })
+
+
 
 
 module.exports = router
